@@ -68,7 +68,7 @@ button{color:inherit}
 .detail-body{padding:15px 18px 20px;overflow:auto}.detail-section-title{font-weight:800;font-size:12px;margin:4px 0 10px}.points{margin:0;padding:0 19px 0 0;line-height:2;font-weight:450}.points li{margin-bottom:5px}.points li::marker{color:var(--detail-color,#0ea5e9)}
 .source-box{margin-top:16px;border:1px solid var(--border);background:var(--bg);border-radius:13px;padding:11px 12px;font-size:11px;line-height:1.8;color:var(--muted)}
 .source-pdf{margin-top:12px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--node)}
-.source-pdf.hidden{display:none}.source-pdf-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;border-bottom:1px solid var(--border);font-size:11px;font-weight:800}.source-pdf-head a{color:var(--detail-color,#0ea5e9);text-decoration:none;white-space:nowrap}
+.source-pdf.hidden{display:none}.source-pdf:fullscreen{border-radius:0;background:var(--panel);display:flex;flex-direction:column}.source-pdf:fullscreen iframe{flex:1;height:auto}.source-pdf-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;border-bottom:1px solid var(--border);font-size:11px;font-weight:800}.source-pdf-actions{display:flex;align-items:center;gap:8px;white-space:nowrap}.source-pdf-head a,.source-pdf-fullscreen{color:var(--detail-color,#0ea5e9);text-decoration:none;white-space:nowrap}.source-pdf-fullscreen{border:0;background:transparent;padding:0;cursor:pointer;font-weight:800;font-size:11px}
 .source-pdf-links{display:flex;gap:6px;overflow:auto;padding:8px 10px;border-bottom:1px solid var(--border)}.source-pdf-links button{flex:0 0 auto;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800;cursor:pointer}.source-pdf-links button.active{background:var(--detail-color,#0ea5e9);border-color:var(--detail-color,#0ea5e9);color:white}
 .source-pdf iframe{display:block;width:100%;height:300px;border:0;background:white}
 .detail-actions{display:flex;gap:7px;margin-top:14px}.detail-actions button{flex:1;border:1px solid var(--border);background:var(--node);border-radius:10px;padding:9px;cursor:pointer;font-weight:700;font-size:11px}
@@ -191,7 +191,10 @@ button{color:inherit}
         <div class="source-pdf hidden" id="sourcePdf">
           <div class="source-pdf-head">
             <span>نمایش PDF منبع</span>
-            <a id="sourcePdfOpen" href="#" target="_blank" rel="noopener">باز کردن در تب جدید</a>
+            <div class="source-pdf-actions">
+              <button class="source-pdf-fullscreen" id="sourcePdfFullscreen" type="button">تمام‌صفحه</button>
+              <a id="sourcePdfOpen" href="#" target="_blank" rel="noopener">باز کردن در تب جدید</a>
+            </div>
           </div>
           <div class="source-pdf-links" id="sourcePdfLinks"></div>
           <iframe id="sourcePdfFrame" title="PDF منبع جزوه"></iframe>
@@ -369,6 +372,13 @@ function setSourcePdf(node){
   });
   show(lectures[0]);
 }
+async function toggleSourcePdfFullscreen(){
+  const box=document.getElementById('sourcePdf'), open=document.getElementById('sourcePdfOpen');
+  if(box.classList.contains('hidden'))return;
+  if(document.fullscreenElement){await document.exitFullscreen();return}
+  if(box.requestFullscreen){await box.requestFullscreen();return}
+  if(open.href)window.open(open.href,'_blank','noopener');
+}
 
 function selectNode(id,focus=false){
   selectedId=id; const node=nodesById.get(id); const color=getBranchColor(node);
@@ -491,6 +501,7 @@ document.getElementById('detailClose').onclick=()=>{detailPanel.classList.add('c
 document.getElementById('mobileDetail').onclick=()=>{if(!selectedId)selectNode('root');detailPanel.classList.remove('closed');detailPanel.classList.toggle('mobile-open')};
 document.getElementById('focusNode').onclick=()=>selectedId&&focusOnNode(selectedId);
 document.getElementById('toggleNode').onclick=()=>selectedId&&toggleExpanded(selectedId);
+document.getElementById('sourcePdfFullscreen').onclick=()=>toggleSourcePdfFullscreen().catch(()=>document.getElementById('sourcePdfOpen').click());
 document.getElementById('helpBtn').onclick=()=>document.getElementById('help').classList.remove('hidden');
 document.getElementById('helpClose').onclick=()=>document.getElementById('help').classList.add('hidden');
 document.getElementById('help').addEventListener('click',e=>{if(e.target.id==='help')e.currentTarget.classList.add('hidden')});
