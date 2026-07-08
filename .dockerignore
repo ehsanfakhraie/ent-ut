@@ -1,6 +1,7 @@
 .git
 .agents
 .codex
+.playwright-cli
 .DS_Store
 node_modules
 *.log

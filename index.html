@@ -377,11 +377,11 @@ function startPinch(){
 }
 canvas.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
+  const startedOnCard=!!e.target.closest?.('.node-card');
+  if(startedOnCard&&e.pointerType!=='touch')return;
   const p=localPoint(e);activePointers.set(e.pointerId,p);
   try{canvas.setPointerCapture(e.pointerId)}catch(_){}
   if(activePointers.size>=2){startPinch();e.preventDefault();return}
-  const startedOnCard=!!e.target.closest?.('.node-card');
-  if(startedOnCard&&e.pointerType!=='touch')return;
   // روی موبایل می‌توان حرکت را از روی خود کارت آغاز کرد؛ اگر حرکت نکند همان «تپ» محسوب می‌شود.
   drag={id:e.pointerId,x:p.x,y:p.y,tx:transform.x,ty:transform.y,moved:false,startedOnCard};canvas.classList.add('dragging');
   if(!startedOnCard)e.preventDefault();
