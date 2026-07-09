@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مرور اسلاید و محتوای واقعی کلاس</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-fa:"Vazirmatn","IRANSansX","IRANSans","Shabnam","Sahel","Segoe UI",Tahoma,Arial,sans-serif;
+  --bg:#f5f7fb; --panel:rgba(255,255,255,.94); --text:#142033; --muted:#64748b;
+  --line:#dbe3ef; --border:rgba(15,23,42,.11); --shadow:0 18px 50px rgba(30,41,59,.14);
+  --node:#fff; --node-hover:#f8fafc; --focus:#0ea5e9; --accent:#2563eb; --good:#10b981;
+}
+[data-theme="dark"]{
+  --bg:#08111f; --panel:rgba(12,23,40,.94); --text:#eef5ff; --muted:#9fb0c7;
+  --line:#2b3a50; --border:rgba(255,255,255,.12); --shadow:0 20px 60px rgba(0,0,0,.4);
+  --node:#101d30; --node-hover:#14243a; --focus:#38bdf8; --accent:#38bdf8; --good:#34d399;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-fa);background:var(--bg);color:var(--text);font-size:14px;letter-spacing:-.12px;text-rendering:optimizeLegibility}
+button,input{font-family:var(--font-fa);font-size:inherit;color:inherit}
+button{cursor:pointer}
+.app{height:100vh;height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.toolbar{z-index:10;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);box-shadow:0 4px 18px rgba(15,23,42,.06)}
+.brand{display:flex;align-items:center;gap:10px;min-width:max-content;margin-left:4px}
+.brand-mark{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#1d4ed8,#06b6d4);color:white;font-size:22px;box-shadow:0 8px 18px rgba(14,165,233,.25)}
+.brand h1{font-size:15px;margin:0 0 3px;font-weight:900;letter-spacing:-.35px}.brand small{color:var(--muted);font-size:11px}
+.session-tabs{display:flex;gap:7px;align-items:center;margin-inline-start:auto}
+.tab,.icon-btn,.link-btn{border:1px solid var(--border);background:var(--node);height:40px;border-radius:12px;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:800}
+.tab{padding:0 14px;font-size:12px}.tab.active{background:var(--accent);border-color:var(--accent);color:white}
+.icon-btn{width:40px;font-size:17px}.link-btn{padding:0 12px;text-decoration:none;font-size:12px}
+.tab:hover,.icon-btn:hover,.link-btn:hover{transform:translateY(-1px);background:var(--node-hover);border-color:rgba(14,165,233,.45)}
+.tab.active:hover{background:var(--accent)}
+.search{position:relative;min-width:240px;max-width:390px;flex:1}
+.search input{width:100%;height:42px;border:1px solid var(--border);background:var(--node);color:var(--text);border-radius:13px;padding:0 42px 0 12px;outline:none}
+.search input:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(14,165,233,.13)}
+.search span{position:absolute;right:14px;top:11px;color:var(--muted)}
+.workspace{min-height:0;display:grid;grid-template-columns:300px minmax(420px,1fr) 390px;gap:12px;padding:12px;background:
+ radial-gradient(circle at 22% 15%,rgba(14,165,233,.09),transparent 25%),
+ radial-gradient(circle at 78% 78%,rgba(139,92,246,.08),transparent 28%),
+ linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+ background-size:auto,auto,32px 32px,32px 32px;background-position:0 0,0 0,-1px -1px,-1px -1px}
+.panel{min-height:0;background:var(--panel);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);backdrop-filter:blur(18px);overflow:hidden;display:flex;flex-direction:column}
+.panel-head{padding:14px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.panel-head h2{font-size:13px;margin:0;font-weight:900}.panel-head small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.slides{overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.slide-btn{border:1px solid var(--border);background:var(--node);border-radius:14px;padding:10px 11px;text-align:right;transition:.16s}
+.slide-btn:hover{background:var(--node-hover);border-color:rgba(14,165,233,.4)}
+.slide-btn.active{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.slide-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;margin-bottom:5px}
+.slide-title{font-weight:900;line-height:1.7;font-size:12.5px}
+.slide-sections{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.pill{border:1px solid var(--border);border-radius:999px;padding:3px 7px;font-size:9.5px;color:var(--muted);background:var(--bg)}
+.viewer{min-height:0}
+.viewer-top{padding:12px 14px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.pager{display:flex;gap:7px}.pager button{width:38px;height:38px;border:1px solid var(--border);background:var(--node);border-radius:11px;font-size:18px}
+.current-title{min-width:0}.current-title h2{font-size:16px;line-height:1.6;margin:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.current-title p{margin:2px 0 0;color:var(--muted);font-size:11px}
+.slide-image-wrap{min-height:0;flex:1;background:#111827;padding:10px;display:grid;place-items:center;overflow:auto}
+.slide-image-wrap img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;border-radius:12px;background:white;box-shadow:0 18px 45px rgba(0,0,0,.28)}
+.content-body{overflow:auto;padding:12px 14px 16px;scroll-behavior:smooth}
+.md-content{line-height:2;color:var(--text)}
+.md-content h1,.md-content h2,.md-content h3{scroll-margin-top:16px;line-height:1.75;letter-spacing:-.25px}
+.md-content h1{font-size:19px;margin:0 0 8px;font-weight:900}
+.md-content h2{font-size:16px;margin:20px 0 9px;font-weight:900;border-top:1px solid var(--border);padding-top:16px}
+.md-content h3{font-size:13.5px;margin:15px 0 7px;font-weight:900;color:var(--accent)}
+.md-content p{margin:0 0 10px;font-weight:450}
+.md-content ul,.md-content ol{margin:8px 0 12px;padding:0 22px 0 0}.md-content li{margin-bottom:4px}.md-content li::marker{color:var(--accent)}
+.md-content table{width:100%;border-collapse:collapse;margin:12px 0;font-size:11px;line-height:1.9}.md-content th,.md-content td{border:1px solid var(--border);padding:7px;vertical-align:top}.md-content th{background:var(--bg);font-weight:900}
+.md-content blockquote{margin:12px 0;padding:10px 13px;border-right:4px solid var(--accent);background:var(--bg);border-radius:10px;color:var(--muted)}
+.md-content strong{font-weight:900}.md-content code{direction:ltr;unicode-bidi:embed;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0 5px}
+.md-content .linked-heading{background:color-mix(in srgb,var(--accent) 13%,transparent);box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 13%,transparent);border-radius:8px}
+.md-content .active-heading{background:color-mix(in srgb,var(--good) 16%,transparent);box-shadow:0 0 0 8px color-mix(in srgb,var(--good) 16%,transparent);border-radius:8px}
+.empty{padding:18px;color:var(--muted);line-height:2}
+.outline{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--border)}
+.outline button{border:1px solid var(--border);background:var(--node);border-radius:999px;padding:7px 10px;font-size:10.5px;font-weight:800}.outline button.active{background:var(--good);border-color:var(--good);color:white}
+.source-note{margin-top:auto;padding:10px 14px;border-top:1px solid var(--border);font-size:10.5px;color:var(--muted);line-height:1.8}
+.hidden{display:none!important}
+mark{background:rgba(245,158,11,.25);color:inherit;border-radius:5px;padding:0 2px}
+@media(max-width:1180px){.workspace{grid-template-columns:250px minmax(360px,1fr) 340px}.brand small{display:none}.search{min-width:180px}}
+@media(max-width:900px){
+  html,body{overflow:auto}.app{height:auto;min-height:100dvh}.toolbar{position:sticky;top:0;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand actions" "search search" "tabs tabs";padding:calc(8px + env(safe-area-inset-top)) 10px 8px}
+  .brand{grid-area:brand;min-width:0}.brand h1{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand-mark{width:38px;height:38px;border-radius:12px}
+  .session-tabs{grid-area:tabs;margin:0;overflow:auto}.search{grid-area:search;max-width:none;min-width:0}.icon-btn{grid-area:actions}
+  .workspace{height:auto;min-height:calc(100dvh - 138px);display:flex;flex-direction:column;padding:9px}.panel{border-radius:17px}
+  .slide-panel{max-height:260px}.slides{flex-direction:row;overflow:auto}.slide-btn{flex:0 0 210px}
+  .viewer{height:68dvh;min-height:460px}.viewer-top{grid-template-columns:1fr auto}.pager{grid-column:2}.current-title{grid-column:1}.link-btn{display:none}
+}
+@media(max-width:520px){.viewer{height:60dvh;min-height:390px}.panel-head{padding:12px}.content-body{padding:10px}.slide-btn{flex-basis:190px}.tab{padding:0 10px}.workspace{gap:9px}.current-title h2{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="toolbar">
+    <div class="brand">
+      <div class="brand-mark">◫</div>
+      <div><h1>اسلایدها و محتوای واقعی کلاس</h1><small>نگاشت اسلایدهای فرصت کارآفرینانه به متن استخراج‌شده از ترنسکریپت</small></div>
+    </div>
+    <div class="search">
+      <span>⌕</span>
+      <input id="search" type="search" placeholder="جست‌وجو در اسلایدها و محتوا…" autocomplete="off">
+    </div>
+    <div class="session-tabs" id="sessionTabs"></div>
+    <button class="icon-btn" id="theme" title="تغییر پوسته">◐</button>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel slide-panel">
+      <div class="panel-head">
+        <div><h2>اسلایدها</h2><small id="slideCount"></small></div>
+        <span class="pill" id="activeSessionLabel"></span>
+      </div>
+      <div class="slides" id="slides"></div>
+      <div class="source-note">هر اسلاید به بخش‌های محتوای واقعی همان جلسه وصل شده است.</div>
+    </aside>
+
+    <section class="panel viewer">
+      <div class="viewer-top">
+        <div class="pager">
+          <button id="nextSlide" title="اسلاید بعدی">›</button>
+          <button id="prevSlide" title="اسلاید قبلی">‹</button>
+        </div>
+        <div class="current-title">
+          <h2 id="currentTitle"></h2>
+          <p id="currentMeta"></p>
+        </div>
+        <a class="link-btn" id="openPdf" target="_blank" rel="noopener">باز کردن PDF</a>
+      </div>
+      <div class="slide-image-wrap">
+        <img id="slideImage" alt="تصویر اسلاید">
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="panel-head">
+        <div><h2>محتوای واقعی کامل</h2><small>کل فایل Markdown جلسه؛ اسلاید انتخاب‌شده بخش مرتبط را هایلایت می‌کند</small></div>
+      </div>
+      <div class="outline" id="outline"></div>
+      <div class="content-body" id="content"></div>
+      <div class="source-note" id="sourceLink"></div>
+    </aside>
+  </main>
+</div>
+
+<script>
+const PERSIAN_DIGITS='۰۱۲۳۴۵۶۷۸۹';
+const faNum=n=>String(n).replace(/\d/g,d=>PERSIAN_DIGITS[d]);
+const clean=s=>String(s||'').replace(/\s+/g,' ').trim();
+
+const SECTION_REFS = {
+  2: {
+    's2-1':'جایگاه فرصت در مدل کارآفرینی',
+    's2-2':'فرصت و تفاوت آن با ایده',
+    's2-3':'سه پایه فرصت',
+    's2-4':'فرصت‌ها چه زمانی وجود دارند',
+    's2-5':'فرصت کارآفرینانه چیست',
+    's2-6':'ناهمگنی فرصت‌ها',
+    's2-7':'ماتریس پتانسیل و چالش',
+    's2-8':'شاخص‌های پتانسیل فرصت',
+    's2-9':'شاخص‌های چالش و امکان‌پذیری',
+    's2-10':'فرایند شناسایی، ارزیابی و بهره‌برداری از فرصت',
+    's2-11':'غیرخطی بودن کارآفرینی',
+    's2-12':'مجموعه فرصت‌ها و انتخاب میدان بازی',
+    's2-13':'تله بیشینه محلی'
+  },
+  3: {
+    's3-1':'تمرکز جلسه سوم',
+    's3-2':'عملکرد، رفتار و زمینه',
+    's3-3':'سه فضای تصمیم‌گیری',
+    's3-4':'کارآفرینی استراتژیک و دوسوتوانی',
+    's3-5':'انواع فرصت بر اساس عرضه و تقاضا',
+    's3-6':'کشف فرصت و خلق فرصت',
+    's3-7':'مثال صنعت شاه‌خرچنگ',
+    's3-8':'منشأ فرصت‌ها',
+    's3-9':'زمینه متفاوت، اقدام متفاوت',
+    's3-10':'تفکر اثرساز',
+    's3-11':'اصول تفکر اثرساز',
+    's3-12':'روش‌های ناب و توسعه مشتری',
+    's3-13':'اصول اجرایی اقدام کارآفرینانه',
+    's3-14':'تکامل از شکل‌گیری به توسعه'
+  }
+};
+
+const sessions = {
+  2: {title:'جلسه دوم', topic:'تشخیص و ارزیابی فرصت کارآفرینانه', pdf:'sources/op/pdfs/session_2.pdf', slideDir:'sources/op/slides/session_2', md:'sources/op/content/content_2.md', pages:45, slides:[
+    ['هفته دوم؛ تعاریف و تناسب ایده-فرصت-عامل',['s2-1']],['نقشه جلسات و هدف درس',['s2-1']],['کارآفرینی مستقل و سازمانی',['s2-1']],['تناسب مؤلفه‌های اصلی',['s2-1']],['Concepts',['s2-2']],['ریشه واژه Opportunity',['s2-2']],['تعریف فرصت',['s2-2','s2-3']],['ایده و تغییرپذیری آن',['s2-2']],['آلودگی آب شرب شهری',['s2-2']],['مسن شدن جمعیت',['s2-2']],['کوپنی شدن بنزین',['s2-2']],['حمله تروریستی',['s2-2']],['تک‌فرزندی',['s2-2']],['عوامل خلق ارزش و کسب سود',['s2-3']],['نواقص بازار و ایده کسب‌وکار',['s2-3','s2-4']],['فرصت چه زمانی وجود دارد؟',['s2-4']],['عدم تعادل دائمی سیستم',['s2-4']],['علامت‌های عدم تعادل',['s2-4']],['فرصت کارآفرینانه',['s2-5']],['ناهمگنی فرصت‌ها',['s2-6']],['نقشه جذابیت فرصت',['s2-6','s2-7']],['نیاز مهم برآورده‌نشده',['s2-8']],['اندازه بازار',['s2-8']],['رشد و دوام فرصت',['s2-8']],['سودآوری اقتصادی',['s2-8']],['موانع اجرایی و امکان‌پذیری',['s2-9']],['چالش قابل مدیریت',['s2-9']],['شاخص‌های Feasibility',['s2-9']],['به‌موقع بودن',['s2-8','s2-9']],['اکوسیستم نوآوری',['s2-9']],['بازگشت به نقشه جذابیت فرصت',['s2-7']],['اسلاید تصویری/تمرینی',['s2-7','s2-9']],['اسلاید تصویری/تمرینی',['s2-7','s2-9']],['اسلاید تصویری/تمرینی',['s2-7','s2-9']],['فرایندهای اصلی',['s2-10']],['واژه مناسب برای شناسایی فرصت',['s2-10']],['درک فرصت و فرصت واقعی',['s2-10']],['اسلاید تصویری؛ خطای ادراک',['s2-10']],['رسیدن به واقعیت بازار',['s2-10','s2-11']],['تعریف شناسایی فرصت',['s2-10']],['فرایند شناسایی',['s2-10']],['فرایند بهره‌برداری',['s2-10']],['توسعه موازی',['s2-11']],['مدل Vogel',['s2-11']],['Opportunity Set',['s2-12','s2-13']]
+  ]},
+  3: {title:'جلسه سوم', topic:'شرایط عدم‌اطمینان، انواع فرصت و تفکر اثرساز', pdf:'sources/op/pdfs/session_3.pdf', slideDir:'sources/op/slides/session_3', md:'sources/op/content/content_3.md', pages:33, slides:[
+    ['هفته سوم؛ انواع فرصت‌ها',['s3-1']],['نقشه جلسات و هدف درس',['s3-1']],['تناسب مؤلفه‌های اصلی',['s3-1']],['تناسب زمینه و رفتار',['s3-2']],['تغییر ذهنیت، اصول و ابزارها',['s3-3','s3-4']],['انواع فرصت؛ عرضه و تقاضا',['s3-5']],['نظریه‌های کشف، خلق و بارورسازی',['s3-6']],['شکل‌گیری صنعت شاه‌خرچنگ',['s3-7']],['Wakefield Seafoods؛ تنگناها',['s3-7']],['اقدامات برای خلق فرصت',['s3-7']],['منابع و منشأ فرصت',['s3-8']],['خطای سیستم؛ شرکت‌های ناکارآمد',['s3-8']],['خطای سیستم؛ فقدان استراتژی',['s3-8']],['تمایز',['s3-8']],['خطای سیستم؛ اطلاعات ناقص',['s3-8']],['دولت‌ها و نهادها',['s3-8']],['شوک‌های خارجی',['s3-8']],['فعالیت‌های کارآفرین',['s3-8']],['زمینه متفاوت',['s3-9']],['زمینه، اقدام و عامل متفاوت',['s3-9']],['اسلاید تصویری/گذار',['s3-9']],['Sarasvathy؛ تفکر علی و اثرساز',['s3-10','s3-11']],['Sarasvathy 2001',['s3-10','s3-11']],['Customer Development',['s3-12']],['Value Proposition Design',['s3-12']],['The Innovator Method',['s3-12']],['Lean Startup',['s3-12']],['اصول و شعارهای اجرایی',['s3-13']],['Complementary',['s3-13']],['اسلاید تصویری/تکمیلی',['s3-13']],['اقدامات متفاوت در کشف و خلق',['s3-9','s3-14']],['تکامل از شکل‌گیری به توسعه',['s3-14']],['اسلاید پایانی',['s3-14']]
+  ]}
+};
+
+let activeSession = 2;
+let activePage = 1;
+let activeFilter = '';
+const loadedContent = {};
+const $ = id => document.getElementById(id);
+
+function renderTabs(){
+  $('sessionTabs').innerHTML = Object.entries(sessions).map(([id,s]) =>
+    `<button class="tab ${Number(id)===activeSession?'active':''}" data-session="${id}">${s.title}</button>`
+  ).join('');
+  document.querySelectorAll('[data-session]').forEach(btn=>btn.onclick=()=>setSession(Number(btn.dataset.session)));
+}
+
+function renderSlides(){
+  const s=sessions[activeSession];
+  $('slideCount').textContent=`${faNum(s.pages)} اسلاید`;
+  $('activeSessionLabel').textContent=s.title;
+  const q=clean(activeFilter).toLowerCase();
+  $('slides').innerHTML = s.slides.map((slide,i)=>{
+    const page=i+1, title=slide[0], ids=slide[1];
+    const hay=(title+' '+ids.map(id=>refLabel(id)).join(' ')).toLowerCase();
+    const hide=q && !hay.includes(q);
+    return `<button class="slide-btn ${page===activePage?'active':''} ${hide?'hidden':''}" data-page="${page}">
+      <div class="slide-meta"><span>اسلاید ${faNum(page)}</span><span>${s.title}</span></div>
+      <div class="slide-title">${highlight(title)}</div>
+      <div class="slide-sections">${ids.map(id=>`<span class="pill">${highlight(refLabel(id))}</span>`).join('')}</div>
+    </button>`;
+  }).join('');
+  document.querySelectorAll('[data-page]').forEach(btn=>btn.onclick=()=>setPage(Number(btn.dataset.page)));
+}
+
+function refLabel(ref){
+  return SECTION_REFS[activeSession]?.[ref] || ref;
+}
+
+async function setSession(id){
+  activeSession=id;
+  activePage=1;
+  await loadContent(id);
+  render();
+}
+
+function setPage(page){
+  const max=sessions[activeSession].pages;
+  activePage=Math.min(max,Math.max(1,page));
+  renderSlides();
+  renderCurrent();
+}
+
+function renderCurrent(){
+  const s=sessions[activeSession];
+  const slide=s.slides[activePage-1];
+  $('currentTitle').innerHTML=highlight(slide[0]);
+  $('currentMeta').textContent=`${s.title} • اسلاید ${faNum(activePage)} از ${faNum(s.pages)} • ${s.topic}`;
+  const pdfUrl=`${s.pdf}#page=${activePage}&view=FitH`;
+  $('slideImage').src=slideImageUrl(s, activePage);
+  $('slideImage').alt=`${s.title}، اسلاید ${faNum(activePage)}: ${slide[0]}`;
+  $('openPdf').href=pdfUrl;
+  $('openPdf').textContent='باز کردن PDF';
+  $('sourceLink').innerHTML=`منبع محتوا: <a href="${s.md}" target="_blank" rel="noopener">${s.md}</a>`;
+
+  const ids=slide[1];
+  const doc=loadedContent[activeSession];
+  if(!doc){
+    $('outline').innerHTML='';
+    $('content').innerHTML='<div class="empty">در حال خواندن محتوای Markdown…</div>';
+    return;
+  }
+  const linkedHeadings = ids.map(refToHeadingId).filter(Boolean);
+  $('outline').innerHTML=doc.headings.filter(h=>h.level<=3).map(h =>
+    `<button class="${linkedHeadings.includes(h.id)?'active':''}" data-heading="${h.id}">${highlight(shortTitle(h.title))}</button>`
+  ).join('');
+  document.querySelectorAll('[data-heading]').forEach(btn=>btn.onclick=()=>scrollToHeading(btn.dataset.heading));
+  $('content').innerHTML=`<div class="md-content">${doc.html}</div>`;
+  markLinkedHeadings(linkedHeadings);
+  requestAnimationFrame(()=>scrollToHeading(linkedHeadings[0], true));
+}
+
+function refToHeadingId(ref){
+  const query = SECTION_REFS[activeSession]?.[ref];
+  const doc = loadedContent[activeSession];
+  if(!query || !doc) return '';
+  const nq = normalizeTitle(query);
+  const found = doc.headings.find(h => normalizeTitle(h.title).includes(nq) || nq.includes(normalizeTitle(h.title)));
+  return found?.id || '';
+}
+
+function slideImageUrl(session, page){
+  return `${session.slideDir}/slide-${String(page).padStart(2,'0')}.png`;
+}
+
+function scrollToHeading(id, soft=false){
+  if(!id) return;
+  const target = document.getElementById(id);
+  if(!target) return;
+  target.classList.add('active-heading');
+  target.scrollIntoView({block:'start', behavior: soft ? 'smooth' : 'auto'});
+  window.setTimeout(()=>target.classList.remove('active-heading'), 1600);
+}
+
+function markLinkedHeadings(ids){
+  document.querySelectorAll('.linked-heading').forEach(el=>el.classList.remove('linked-heading'));
+  ids.forEach(id=>document.getElementById(id)?.classList.add('linked-heading'));
+}
+
+function highlight(text){
+  const q=clean(activeFilter);
+  if(!q) return text;
+  const esc=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return String(text).replace(new RegExp(esc,'gi'),m=>`<mark>${m}</mark>`);
+}
+
+function normalizeTitle(text){
+  return clean(text)
+    .replace(/[۰-۹]/g,d=>PERSIAN_DIGITS.indexOf(d))
+    .replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+    .replace(/^[\d.ـ\-\s]+/,'')
+    .replace(/[؟?؛:،,.()[\]«»"'`]/g,'')
+    .toLowerCase();
+}
+
+function shortTitle(title){
+  return title.replace(/^[۰-۹0-9]+(?:[.ـ-][۰-۹0-9]+)?[.،\s]*/,'');
+}
+
+async function loadContent(sessionId){
+  if(loadedContent[sessionId]) return;
+  $('content').innerHTML='<div class="empty">در حال خواندن محتوای کامل Markdown…</div>';
+  const path=sessions[sessionId].md;
+  try{
+    const res=await fetch(path);
+    if(!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    loadedContent[sessionId]=parseMarkdown(await res.text(), sessionId);
+  }catch(err){
+    loadedContent[sessionId]={html:`<div class="empty">خواندن فایل ${escapeHtml(path)} ممکن نشد. صفحه را با یک سرور محلی اجرا کنید.</div>`, headings:[]};
+  }
+}
+
+function parseMarkdown(md, sessionId){
+  const lines=md.replace(/\r\n/g,'\n').split('\n');
+  const headings=[];
+  let html='', paragraph=[];
+  const flushParagraph=()=>{
+    if(!paragraph.length) return;
+    html += `<p>${inline(paragraph.join(' '))}</p>`;
+    paragraph=[];
+  };
+  const readTable=(start)=>{
+    const rows=[];
+    let i=start;
+    while(i<lines.length && /^\s*\|.*\|\s*$/.test(lines[i])){
+      if(!/^\s*\|?\s*:?-{3,}/.test(lines[i])) rows.push(lines[i]);
+      i++;
+    }
+    html += '<table>' + rows.map((row,idx)=>{
+      const cells=row.trim().replace(/^\|/,'').replace(/\|$/,'').split('|').map(c=>inline(c.trim()));
+      return `<tr>${cells.map(c=>idx===0?`<th>${c}</th>`:`<td>${c}</td>`).join('')}</tr>`;
+    }).join('') + '</table>';
+    return i-1;
+  };
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    if(!clean(line)){flushParagraph(); continue;}
+    const heading=line.match(/^(#{1,3})\s+(.+)$/);
+    if(heading){
+      flushParagraph();
+      const level=heading[1].length;
+      const title=heading[2].trim();
+      const id=`md-${sessionId}-${headings.length+1}`;
+      headings.push({id,title,level});
+      html += `<h${level} id="${id}">${inline(title)}</h${level}>`;
+      continue;
+    }
+    if(/^\s*\|.*\|\s*$/.test(line)){
+      flushParagraph();
+      i=readTable(i);
+      continue;
+    }
+    const list=line.match(/^\s*(-|\d+\.)\s+(.+)$/);
+    if(list){
+      flushParagraph();
+      const ordered=/^\d+\./.test(list[1]);
+      const tag=ordered?'ol':'ul';
+      html += `<${tag}>`;
+      while(i<lines.length){
+        const item=lines[i].match(/^\s*(-|\d+\.)\s+(.+)$/);
+        if(!item) break;
+        html += `<li>${inline(item[2])}</li>`;
+        i++;
+      }
+      html += `</${tag}>`;
+      i--;
+      continue;
+    }
+    if(/^>/.test(line)){
+      flushParagraph();
+      html += `<blockquote>${inline(line.replace(/^>\s*/,''))}</blockquote>`;
+      continue;
+    }
+    paragraph.push(line.trim());
+  }
+  flushParagraph();
+  return {html, headings};
+}
+
+function inline(text){
+  let value=escapeHtml(text);
+  value=value.replace(/`([^`]+)`/g,'<code>$1</code>');
+  value=value.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  return highlight(value);
+}
+
+function escapeHtml(text){
+  return String(text).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+}
+
+function render(){
+  renderTabs();
+  renderSlides();
+  renderCurrent();
+}
+
+$('prevSlide').onclick=()=>setPage(activePage-1);
+$('nextSlide').onclick=()=>setPage(activePage+1);
+$('search').oninput=e=>{activeFilter=e.target.value;renderSlides();renderCurrent();};
+$('theme').onclick=()=>document.documentElement.toggleAttribute('data-theme');
+window.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') setPage(activePage-1);
+  if(e.key==='ArrowLeft') setPage(activePage+1);
+});
+loadContent(activeSession).then(render);
+</script>
+</body>
+</html>
