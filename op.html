@@ -65,7 +65,7 @@ button{cursor:pointer}
 .current-title{min-width:0}.current-title h2{font-size:16px;line-height:1.6;margin:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.current-title p{margin:2px 0 0;color:var(--muted);font-size:11px}
 .slide-image-wrap{min-height:0;flex:1;background:#111827;padding:10px;display:grid;place-items:center;overflow:auto}
 .slide-image-wrap img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;border-radius:12px;background:white;box-shadow:0 18px 45px rgba(0,0,0,.28)}
-.content-body{overflow:auto;padding:12px 14px 16px;scroll-behavior:smooth}
+.content-body{min-height:0;flex:1;overflow:auto;padding:12px 14px 16px;scroll-behavior:smooth}
 .md-content{line-height:2;color:var(--text)}
 .md-content h1,.md-content h2,.md-content h3{scroll-margin-top:16px;line-height:1.75;letter-spacing:-.25px}
 .md-content h1{font-size:19px;margin:0 0 8px;font-weight:900}
@@ -79,8 +79,8 @@ button{cursor:pointer}
 .md-content .linked-heading{background:color-mix(in srgb,var(--accent) 13%,transparent);box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 13%,transparent);border-radius:8px}
 .md-content .active-heading{background:color-mix(in srgb,var(--good) 16%,transparent);box-shadow:0 0 0 8px color-mix(in srgb,var(--good) 16%,transparent);border-radius:8px}
 .empty{padding:18px;color:var(--muted);line-height:2}
-.outline{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--border)}
-.outline button{border:1px solid var(--border);background:var(--node);border-radius:999px;padding:7px 10px;font-size:10.5px;font-weight:800}.outline button.active{background:var(--good);border-color:var(--good);color:white}
+.outline{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;flex:0 0 auto;padding:10px 14px;border-bottom:1px solid var(--border);scrollbar-width:thin;overscroll-behavior-x:contain}
+.outline button{flex:0 0 auto;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid var(--border);background:var(--node);border-radius:999px;padding:7px 10px;font-size:10.5px;font-weight:800}.outline button.active{background:var(--good);border-color:var(--good);color:white}
 .source-note{margin-top:auto;padding:10px 14px;border-top:1px solid var(--border);font-size:10.5px;color:var(--muted);line-height:1.8}
 .hidden{display:none!important}
 mark{background:rgba(245,158,11,.25);color:inherit;border-radius:5px;padding:0 2px}
@@ -125,7 +125,7 @@ mark{background:rgba(245,158,11,.25);color:inherit;border-radius:5px;padding:0 2
         <span class="pill" id="activeSessionLabel"></span>
       </div>
       <div class="slides" id="slides"></div>
-      <div class="source-note">هر اسلاید به بخش‌های محتوای واقعی همان جلسه وصل شده است.</div>
+      <div class="source-note">اسلایدهای مرتبط به بخش‌های محتوای واقعی همان جلسه وصل شده‌اند.</div>
     </aside>
 
     <section class="panel viewer">
@@ -178,30 +178,201 @@ const SECTION_REFS = {
     's2-13':'تله بیشینه محلی'
   },
   3: {
-    's3-1':'تمرکز جلسه سوم',
-    's3-2':'عملکرد، رفتار و زمینه',
-    's3-3':'سه فضای تصمیم‌گیری',
-    's3-4':'کارآفرینی استراتژیک و دوسوتوانی',
-    's3-5':'انواع فرصت بر اساس عرضه و تقاضا',
-    's3-6':'کشف فرصت و خلق فرصت',
-    's3-7':'مثال صنعت شاه‌خرچنگ',
-    's3-8':'منشأ فرصت‌ها',
-    's3-9':'زمینه متفاوت، اقدام متفاوت',
-    's3-10':'تفکر اثرساز',
-    's3-11':'اصول تفکر اثرساز',
-    's3-12':'روش‌های ناب و توسعه مشتری',
-    's3-13':'اصول اجرایی اقدام کارآفرینانه',
-    's3-14':'تکامل از شکل‌گیری به توسعه'
+    's3-5':'انواع فرصت',
+    's3-6':'فرصت کشفی',
+    's3-7':'فرصت خلقی',
+    's3-8':'مفهوم عدم‌قطعیت',
+    's3-9':'تفکر علّی یا Causation',
+    's3-10':'تفکر امکان‌گرا یا Effectuation',
+    's3-11':'چهار اصل اصلی Effectuation',
+    's3-12':'دو مرحله اصلی کسب‌وکار',
+    's3-13':'مراحل مهم فاز جست‌وجو',
+    's3-14':'تصمیم‌گیری مبتنی بر شواهد',
+    's3-15':'سریع و ارزان شکست بخور',
+    's3-16':'نیروهای مؤثر بر تغییر رفتار مشتری',
+    's3-17':'رفتار واقعی مهم‌تر از گفتار مشتری است',
+    's3-18':'Shark Bite در برابر Mosquito Bite',
+    's3-19':'دسترسی به منابع به‌جای مالکیت منابع',
+    's3-20':'کارآفرینی فعالیتی اجتماعی است',
+    's3-21':'سوگیری نوآور',
+    's3-22':'هدیه نوآور',
+    's3-23':'نوآور طراحی می‌کند، مشتری اعتبارسنجی می‌کند',
+    's3-24':'مدل کسب‌وکار ضعیف می‌تواند نوآوری خوب را نابود کند',
+    's3-25':'کارآفرینی و مدیریت رقیب نیستند',
+    's3-26':'یادگیری کارآفرینانه',
+    's3-27':'کارآفرین دوسوتوان'
   }
 };
 
+const buildSlides = (count, titlesByPage={}, refsByPage={}) =>
+  Array.from({length:count}, (_,i) => {
+    const page = i + 1;
+    return [titlesByPage[page] || `اسلاید ${faNum(page)}`, refsByPage[page] || []];
+  });
+
+const SESSION_4_TITLES = {
+  1:'هفته ۴؛ توسعه ایده کسب‌وکار',
+  2:'نقشه جلسات و هدف درس',
+  3:'تناسب مؤلفه‌های کلیدی',
+  4:'سوالات اصلی',
+  5:'دو دلیل اصلی تشخیص بهتر فرصت',
+  6:'موقعیت‌های شغلی و تجربه صنعت',
+  8:'جستجوی غیرفعال در مقابل فعال',
+  9:'جستجوی غیرفعال',
+  10:'جستجوی فعال',
+  11:'جستجوی فعال؛ شواهد تجربی',
+  12:'Constrained, systematic search theory',
+  13:'تئوری جستجوی فعال محدودشده',
+  14:'کشف تصادفی و خوش‌اقبالی',
+  15:'خوش‌اقبالی / کشف تصادفی',
+  16:'کشف تصادفی',
+  17:'شبکه / سرمایه اجتماعی',
+  18:'بعد ساختاری سرمایه اجتماعی',
+  19:'بعد ارتباطی سرمایه اجتماعی',
+  20:'بعد شناختی سرمایه اجتماعی',
+  21:'کارآفرینان شبکه‌ای در مقابل مستقل',
+  22:'تفسیر متفاوت و فرایند ذهنی',
+  23:'الگوهای ذهنی',
+  24:'تمرین قالب‌های ذهنی',
+  26:'دو نوع الگوی ذهنی',
+  27:'تفاوت بین عاملان / افراد',
+  28:'سحر و بابی هاشمی',
+  29:'حالات و احساسات',
+  30:'نقش ژن‌ها',
+  31:'The innovator’s DNA',
+  32:'Why are some more creative?',
+  33:'Associative Thinking',
+  38:'Intention',
+  39:'مشاهده‌گری، پرسشگری، شبکه‌سازی و آزمایشگری',
+  42:'New venture idea',
+  43:'A journey and process',
+  44:'A journey / process',
+  45:'Idea generation patterns',
+  46:'دو الگوی کلی شناسایی',
+  47:'تناسب عامل و فرصت',
+  48:'نوع صنعت / کسب‌وکار',
+  49:'Constrained systematic search theory',
+  50:'Market domain',
+  51:'Innovator’s bias',
+  52:'Innovator’s gift',
+  53:'Pain points / struggling moment',
+  54:'Innovation as a switch',
+  55:'Customer force model',
+  57:'Influential factors on satisfaction / pain points',
+  58:'Job to be done, context, alternatives',
+  59:'Job to be done theory',
+  61:'Market Research',
+  62:'Focal point',
+  63:'Job + context',
+  64:'From industry to arena',
+  67:'مشاهده‌گری، پرسشگری، شبکه‌سازی و آزمایشگری',
+  68:'Shadow yourself',
+  69:'Yourself as a customer',
+  72:'Your family network',
+  73:'Shadow a customer',
+  75:'دیگر کشورها و صنایع',
+  76:'دیگر کشورها',
+  77:'دیگر کشورها',
+  78:'دیگر کشورها',
+  79:'دیگر کشورها',
+  80:'دیگر کشورها',
+  81:'دیگر کشورها',
+  82:'دیگر صنایع؛ پلتفرم',
+  83:'دیگر صنایع',
+  84:'رقیب جدید؛ First follower',
+  85:'رقیب جدید؛ First follower',
+  86:'رقیب جدید؛ First follower',
+  87:'رقیب جدید؛ First follower',
+  89:'Switching triggers',
+  92:'Trend analysis',
+  93:'الگوهای کار',
+  94:'الگوی خانواده',
+  95:'سبک زندگی',
+  96:'سن جمعیت خاورمیانه',
+  97:'Aging',
+  98:'Baby boomers',
+  99:'The boundary blurring trend',
+  100:'جمعیت مسلمانان',
+  101:'Halal industries',
+  102:'چاقی',
+  103:'The Conscious Consumption trend',
+  104:'The Natural Fitness trend',
+  105:'Weak economy; discount',
+  106:'Weak economy; university',
+  107:'Weak economy; self-employment',
+  108:'Technological forces',
+  109:'Telemedicine',
+  110:'Digikala',
+  111:'Environmental trends',
+  112:'وضعیت منابع آبی',
+  113:'Sunburn detection',
+  114:'New venture idea',
+  115:'Constrained systematic search',
+  116:'Internally oriented',
+  117:'Constrained systematic search theory',
+  118:'Fungibility / new combination',
+  119:'Two important stages',
+  120:'Phase Zero',
+  122:'JTBD Theory',
+  123:'Key elements of JTBD ecosystem',
+  124:'نمونه کارهای مشتری',
+  125:'Customer job map'
+};
+
+const SESSION_4_REFS = {};
+
 const sessions = {
   2: {title:'جلسه دوم', topic:'تشخیص و ارزیابی فرصت کارآفرینانه', pdf:'sources/op/pdfs/session_2.pdf', slideDir:'sources/op/slides/session_2', md:'sources/op/content/content_2.md', pages:45, slides:[
-    ['هفته دوم؛ تعاریف و تناسب ایده-فرصت-عامل',['s2-1']],['نقشه جلسات و هدف درس',['s2-1']],['کارآفرینی مستقل و سازمانی',['s2-1']],['تناسب مؤلفه‌های اصلی',['s2-1']],['Concepts',['s2-2']],['ریشه واژه Opportunity',['s2-2']],['تعریف فرصت',['s2-2','s2-3']],['ایده و تغییرپذیری آن',['s2-2']],['آلودگی آب شرب شهری',['s2-2']],['مسن شدن جمعیت',['s2-2']],['کوپنی شدن بنزین',['s2-2']],['حمله تروریستی',['s2-2']],['تک‌فرزندی',['s2-2']],['عوامل خلق ارزش و کسب سود',['s2-3']],['نواقص بازار و ایده کسب‌وکار',['s2-3','s2-4']],['فرصت چه زمانی وجود دارد؟',['s2-4']],['عدم تعادل دائمی سیستم',['s2-4']],['علامت‌های عدم تعادل',['s2-4']],['فرصت کارآفرینانه',['s2-5']],['ناهمگنی فرصت‌ها',['s2-6']],['نقشه جذابیت فرصت',['s2-6','s2-7']],['نیاز مهم برآورده‌نشده',['s2-8']],['اندازه بازار',['s2-8']],['رشد و دوام فرصت',['s2-8']],['سودآوری اقتصادی',['s2-8']],['موانع اجرایی و امکان‌پذیری',['s2-9']],['چالش قابل مدیریت',['s2-9']],['شاخص‌های Feasibility',['s2-9']],['به‌موقع بودن',['s2-8','s2-9']],['اکوسیستم نوآوری',['s2-9']],['بازگشت به نقشه جذابیت فرصت',['s2-7']],['اسلاید تصویری/تمرینی',['s2-7','s2-9']],['اسلاید تصویری/تمرینی',['s2-7','s2-9']],['اسلاید تصویری/تمرینی',['s2-7','s2-9']],['فرایندهای اصلی',['s2-10']],['واژه مناسب برای شناسایی فرصت',['s2-10']],['درک فرصت و فرصت واقعی',['s2-10']],['اسلاید تصویری؛ خطای ادراک',['s2-10']],['رسیدن به واقعیت بازار',['s2-10','s2-11']],['تعریف شناسایی فرصت',['s2-10']],['فرایند شناسایی',['s2-10']],['فرایند بهره‌برداری',['s2-10']],['توسعه موازی',['s2-11']],['مدل Vogel',['s2-11']],['Opportunity Set',['s2-12','s2-13']]
+    ['هفته دوم؛ تعاریف و تناسب ایده-فرصت-عامل',['s2-1']],
+    ['نقشه جلسات و هدف درس',['s2-1']],
+    ['کارآفرینی مستقل و سازمانی',['s2-1']],
+    ['تناسب مؤلفه‌های اصلی',['s2-1']],
+    ['Concepts',['s2-2']],
+    ['ریشه واژه Opportunity',['s2-2']],
+    ['تعریف فرصت',['s2-2','s2-3']],
+    ['ایده و تغییرپذیری آن',['s2-2']],
+    ['آلودگی آب شرب شهری',['s2-2']],
+    ['مسن شدن جمعیت',['s2-2']],
+    ['کوپنی شدن بنزین',['s2-2']],
+    ['حمله تروریستی',['s2-2']],
+    ['تک‌فرزندی',['s2-2']],
+    ['عوامل خلق ارزش و کسب سود',['s2-3']],
+    ['نواقص بازار و ایده کسب‌وکار',['s2-3','s2-4']],
+    ['فرصت چه زمانی وجود دارد؟',['s2-4']],
+    ['عدم تعادل دائمی سیستم',['s2-4']],
+    ['علامت‌های عدم تعادل',['s2-4']],
+    ['فرصت کارآفرینانه',['s2-5']],
+    ['ناهمگنی فرصت‌ها',['s2-6']],
+    ['نقشه جذابیت فرصت',['s2-6','s2-7']],
+    ['نیاز مهم برآورده‌نشده',['s2-8']],
+    ['اندازه بازار',['s2-8']],
+    ['رشد و دوام فرصت',['s2-8']],
+    ['سودآوری اقتصادی',['s2-8']],
+    ['موانع اجرایی و امکان‌پذیری',['s2-9']],
+    ['چالش قابل مدیریت',['s2-9']],
+    ['شاخص‌های Feasibility',['s2-9']],
+    ['به‌موقع بودن',['s2-8','s2-9']],
+    ['اکوسیستم نوآوری',['s2-9']],
+    ['بازگشت به نقشه جذابیت فرصت',['s2-7']],
+    ['اسلاید تصویری/تمرینی',['s2-7','s2-9']],
+    ['اسلاید تصویری/تمرینی',['s2-7','s2-9']],
+    ['فرایندهای اصلی',['s2-10']],
+    ['واژه مناسب برای شناسایی فرصت',['s2-10']],
+    ['درک فرصت و فرصت واقعی',['s2-10']],
+    ['اسلاید تصویری؛ خطای ادراک',['s2-10']],
+    ['رسیدن به واقعیت بازار',['s2-10','s2-11']],
+    ['تعریف شناسایی فرصت',['s2-10']],
+    ['فرایند شناسایی',['s2-10']],
+    ['فرایند بهره‌برداری',['s2-10']],
+    ['توسعه موازی',['s2-11']],
+    ['مدل Vogel',['s2-11']],
+    ['Opportunity Set',['s2-12','s2-13']],
+    ['اسلاید پایانی',['s2-12','s2-13']]
   ]},
-  3: {title:'جلسه سوم', topic:'شرایط عدم‌اطمینان، انواع فرصت و تفکر اثرساز', pdf:'sources/op/pdfs/session_3.pdf', slideDir:'sources/op/slides/session_3', md:'sources/op/content/content_3.md', pages:33, slides:[
-    ['هفته سوم؛ انواع فرصت‌ها',['s3-1']],['نقشه جلسات و هدف درس',['s3-1']],['تناسب مؤلفه‌های اصلی',['s3-1']],['تناسب زمینه و رفتار',['s3-2']],['تغییر ذهنیت، اصول و ابزارها',['s3-3','s3-4']],['انواع فرصت؛ عرضه و تقاضا',['s3-5']],['نظریه‌های کشف، خلق و بارورسازی',['s3-6']],['شکل‌گیری صنعت شاه‌خرچنگ',['s3-7']],['Wakefield Seafoods؛ تنگناها',['s3-7']],['اقدامات برای خلق فرصت',['s3-7']],['منابع و منشأ فرصت',['s3-8']],['خطای سیستم؛ شرکت‌های ناکارآمد',['s3-8']],['خطای سیستم؛ فقدان استراتژی',['s3-8']],['تمایز',['s3-8']],['خطای سیستم؛ اطلاعات ناقص',['s3-8']],['دولت‌ها و نهادها',['s3-8']],['شوک‌های خارجی',['s3-8']],['فعالیت‌های کارآفرین',['s3-8']],['زمینه متفاوت',['s3-9']],['زمینه، اقدام و عامل متفاوت',['s3-9']],['اسلاید تصویری/گذار',['s3-9']],['Sarasvathy؛ تفکر علی و اثرساز',['s3-10','s3-11']],['Sarasvathy 2001',['s3-10','s3-11']],['Customer Development',['s3-12']],['Value Proposition Design',['s3-12']],['The Innovator Method',['s3-12']],['Lean Startup',['s3-12']],['اصول و شعارهای اجرایی',['s3-13']],['Complementary',['s3-13']],['اسلاید تصویری/تکمیلی',['s3-13']],['اقدامات متفاوت در کشف و خلق',['s3-9','s3-14']],['تکامل از شکل‌گیری به توسعه',['s3-14']],['اسلاید پایانی',['s3-14']]
-  ]}
+  3: {title:'جلسه سوم', topic:'شرایط عدم‌اطمینان، انواع فرصت و تفکر اثرساز', pdf:'sources/op/pdfs/session_3.pdf', slideDir:'sources/op/slides/session_3', md:'sources/op/content/content_3_2.md', pages:33, slides:[
+    ['هفته سوم؛ انواع فرصت‌ها',[]],['نقشه جلسات و هدف درس',[]],['تناسب مؤلفه‌های اصلی',[]],['تناسب زمینه و رفتار',[]],['تغییر ذهنیت، اصول و ابزارها',[]],['انواع فرصت؛ عرضه و تقاضا',['s3-5']],['نظریه‌های کشف، خلق و بارورسازی',['s3-6','s3-7']],['شکل‌گیری صنعت شاه‌خرچنگ',[]],['Wakefield Seafoods؛ تنگناها',[]],['اقدامات برای خلق فرصت',[]],['منابع و منشأ فرصت',[]],['خطای سیستم؛ شرکت‌های ناکارآمد',[]],['خطای سیستم؛ فقدان استراتژی',[]],['تمایز',[]],['خطای سیستم؛ اطلاعات ناقص',[]],['دولت‌ها و نهادها',[]],['شوک‌های خارجی',[]],['فعالیت‌های کارآفرین',[]],['زمینه متفاوت',['s3-8']],['زمینه، اقدام و عامل متفاوت',['s3-8']],['اسلاید تصویری/گذار',[]],['Sarasvathy؛ تفکر علی و اثرساز',['s3-9','s3-10']],['Sarasvathy 2001',['s3-10','s3-11']],['Customer Development',['s3-12','s3-13']],['Value Proposition Design',['s3-13']],['The Innovator Method',['s3-13']],['Lean Startup',['s3-13','s3-15']],['اصول و شعارهای اجرایی',['s3-15','s3-17']],['Complementary',['s3-19']],['اسلاید تصویری/تکمیلی',[]],['اقدامات متفاوت در کشف و خلق',['s3-8','s3-10']],['تکامل از شکل‌گیری به توسعه',['s3-12']],['اسلاید پایانی',[]]
+  ]},
+  4: {title:'جلسه چهارم', topic:'توسعه ایده کسب‌وکار و شناسایی فرصت', pdf:'sources/op/pdfs/session_4.pdf', slideDir:'sources/op/slides/session_4', md:'', pages:128, slides:buildSlides(128, SESSION_4_TITLES, SESSION_4_REFS)}
 };
 
 let activeSession = 2;
@@ -226,6 +397,7 @@ function renderSlides(){
     const page=i+1, title=slide[0], ids=slide[1];
     const hay=(title+' '+ids.map(id=>refLabel(id)).join(' ')).toLowerCase();
     const hide=q && !hay.includes(q);
+    const sectionPills = ids.length ? `<span class="slide-sections">${ids.map(id=>`<span class="pill">${highlight(refLabel(id))}</span>`).join('')}</span>` : '';
     return `<button class="slide-btn ${page===activePage?'active':''} ${hide?'hidden':''}" data-page="${page}">
       <span class="slide-preview" aria-hidden="true">
         <img src="${slideImageUrl(s, page)}" alt="" loading="lazy" decoding="async">
@@ -233,7 +405,7 @@ function renderSlides(){
       <span class="slide-info">
         <span class="slide-meta"><span>اسلاید ${faNum(page)}</span><span>${s.title}</span></span>
         <span class="slide-title">${highlight(title)}</span>
-        <span class="slide-sections">${ids.map(id=>`<span class="pill">${highlight(refLabel(id))}</span>`).join('')}</span>
+        ${sectionPills}
       </span>
     </button>`;
   }).join('');
@@ -268,7 +440,9 @@ function renderCurrent(){
   $('slideImage').alt=`${s.title}، اسلاید ${faNum(activePage)}: ${slide[0]}`;
   $('openPdf').href=pdfUrl;
   $('openPdf').textContent='باز کردن PDF';
-  $('sourceLink').innerHTML=`منبع محتوا: <a href="${s.md}" target="_blank" rel="noopener">${s.md}</a>`;
+  $('sourceLink').innerHTML=s.md
+    ? `منبع محتوا: <a href="${s.md}" target="_blank" rel="noopener">${s.md}</a>`
+    : 'برای این جلسه فعلاً محتوای متنی وصل نشده است.';
 
   const ids=slide[1];
   const doc=loadedContent[activeSession];
@@ -338,6 +512,10 @@ async function loadContent(sessionId){
   if(loadedContent[sessionId]) return;
   $('content').innerHTML='<div class="empty">در حال خواندن محتوای کامل Markdown…</div>';
   const path=sessions[sessionId].md;
+  if(!path){
+    loadedContent[sessionId]={html:'<div class="empty">برای این جلسه فعلاً محتوای متنی ثبت نشده است.</div>', headings:[]};
+    return;
+  }
   try{
     const res=await fetch(path);
     if(!res.ok) throw new Error(`${res.status} ${res.statusText}`);
