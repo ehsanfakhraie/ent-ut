@@ -109,12 +109,12 @@ button{cursor:pointer}
 }
 @media(max-width:520px){
   .toolbar{grid-template-columns:minmax(0,1fr);grid-template-areas:"brand" "search" "actions";gap:7px}
-  .actions{max-width:none;width:100%;display:grid;grid-template-columns:minmax(0,1fr) 42px 42px 42px}.actions .text-btn,.icon-btn{width:42px;min-width:42px}.select{display:block;max-width:none;width:100%;min-width:0}
+  .actions{max-width:none;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 42px 42px 42px}.actions .text-btn,.icon-btn{width:42px;min-width:42px}.select{display:block;max-width:none;width:100%;min-width:0}
   .workspace{padding:7px}.side{max-height:122px}.card-link{flex-basis:190px;min-height:64px}.link-title{-webkit-line-clamp:2}.link-section{display:none}
   .stage{min-height:calc(100dvh - 246px);grid-template-rows:auto minmax(330px,1fr) auto}.stage-top{padding:9px 10px}.progress{width:94px}.face{padding:14px}.face-foot{display:none}.question{font-size:clamp(17px,5.4vw,21px)}.answer{font-size:clamp(14px,4.25vw,16px)}
 }
 @media(max-width:380px){
-  .brand h1{font-size:12px}.brand-mark{width:35px;height:35px}.search input{height:40px}.actions{grid-template-columns:minmax(0,1fr) 40px 40px 40px}.actions .text-btn,.icon-btn{width:40px;min-width:40px;height:40px}
+  .brand h1{font-size:12px}.brand-mark{width:35px;height:35px}.search input{height:40px}.actions{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 40px 40px 40px}.actions .text-btn,.icon-btn{width:40px;min-width:40px;height:40px}
   .side{max-height:112px}.card-link{flex-basis:176px}.stage{min-height:calc(100dvh - 232px);grid-template-rows:auto minmax(315px,1fr) auto}.stage-actions .text-btn{height:40px;font-size:11px}.content{padding:10px 0}
 }
 @media(max-height:680px) and (max-width:520px){
@@ -135,6 +135,12 @@ button{cursor:pointer}
     </div>
     <div class="actions">
       <select class="select" id="sectionFilter" title="بخش"></select>
+      <select class="select" id="statusFilter" title="وضعیت">
+        <option value="">همه وضعیت‌ها</option>
+        <option value="known">بلدم</option>
+        <option value="review">مرور</option>
+        <option value="unmarked">بدون وضعیت</option>
+      </select>
       <button class="icon-btn" id="shuffle" title="ترتیب تصادفی">⤨</button>
       <button class="icon-btn" id="theme" title="تغییر پوسته">◐</button>
       <a class="text-btn" href="/" title="صفحه اصلی">⌂ <span>خانه</span></a>
@@ -195,7 +201,7 @@ button{cursor:pointer}
 const FA_DIGITS='۰۱۲۳۴۵۶۷۸۹';
 const toFa=n=>String(n).replace(/\d/g,d=>FA_DIGITS[d]);
 const els={
-  search:document.getElementById('search'),sectionFilter:document.getElementById('sectionFilter'),shuffle:document.getElementById('shuffle'),theme:document.getElementById('theme'),
+  search:document.getElementById('search'),sectionFilter:document.getElementById('sectionFilter'),statusFilter:document.getElementById('statusFilter'),shuffle:document.getElementById('shuffle'),theme:document.getElementById('theme'),
   sourceState:document.getElementById('sourceState'),totalCount:document.getElementById('totalCount'),knownCount:document.getElementById('knownCount'),cardList:document.getElementById('cardList'),
   currentSection:document.getElementById('currentSection'),currentMeta:document.getElementById('currentMeta'),progressBar:document.getElementById('progressBar'),flashcard:document.getElementById('flashcard'),
   frontNumber:document.getElementById('frontNumber'),backNumber:document.getElementById('backNumber'),questionText:document.getElementById('questionText'),answerText:document.getElementById('answerText'),
@@ -243,10 +249,12 @@ function saveMarks(){
 function applyFilters(){
   const term=els.search.value.trim().toLowerCase();
   const section=els.sectionFilter.value;
+  const status=els.statusFilter.value;
   filtered=cards.filter(card=>{
     const inSection=!section || card.section===section;
     const inSearch=!term || (card.question+' '+card.answer+' '+card.section).toLowerCase().includes(term);
-    return inSection && inSearch;
+    const inStatus=!status || (status==='known' && known.has(card.number)) || (status==='review' && review.has(card.number)) || (status==='unmarked' && !known.has(card.number) && !review.has(card.number));
+    return inSection && inSearch && inStatus;
   });
   index=Math.min(index,Math.max(filtered.length-1,0));
   flipped=false;
@@ -312,13 +320,14 @@ async function init(){
 }
 els.search.addEventListener('input',applyFilters);
 els.sectionFilter.addEventListener('change',applyFilters);
+els.statusFilter.addEventListener('change',applyFilters);
 els.shuffle.addEventListener('click',()=>{filtered=[...filtered].sort(()=>Math.random()-.5);index=0;flipped=false;render()});
 els.theme.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'':'dark';document.documentElement.dataset.theme=next;localStorage.setItem('strategy-qa-theme',next)});
 els.flip.addEventListener('click',()=>{flipped=!flipped;render()});
 els.flashcard.addEventListener('click',()=>{flipped=!flipped;render()});
 els.prev.addEventListener('click',()=>move(-1));els.next.addEventListener('click',()=>move(1));
-els.known.addEventListener('click',()=>{const card=filtered[index];if(!card)return;known.has(card.number)?known.delete(card.number):known.add(card.number);review.delete(card.number);saveMarks();render()});
-els.review.addEventListener('click',()=>{const card=filtered[index];if(!card)return;review.has(card.number)?review.delete(card.number):review.add(card.number);known.delete(card.number);saveMarks();render()});
+els.known.addEventListener('click',()=>{const card=filtered[index];if(!card)return;known.has(card.number)?known.delete(card.number):known.add(card.number);review.delete(card.number);saveMarks();applyFilters()});
+els.review.addEventListener('click',()=>{const card=filtered[index];if(!card)return;review.has(card.number)?review.delete(card.number):review.add(card.number);known.delete(card.number);saveMarks();applyFilters()});
 window.addEventListener('keydown',event=>{
   if(event.target.matches('input,select')) return;
   if(event.key==='ArrowLeft') move(1);
