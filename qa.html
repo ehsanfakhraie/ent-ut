@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فلش‌کارت‌های استراتژی و نوآوری</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-fa:"Vazirmatn","IRANSansX","IRANSans","Shabnam","Sahel","Segoe UI",Tahoma,Arial,sans-serif;
+  --bg:#f4f7fb;--panel:rgba(255,255,255,.92);--text:#132033;--muted:#65758d;
+  --line:#dbe3ef;--border:rgba(15,23,42,.12);--shadow:0 18px 48px rgba(30,41,59,.14);
+  --card:#fff;--card-2:#f8fafc;--accent:#0f8b8d;--accent-2:#e4572e;--good:#16a34a;--warn:#f59e0b;
+}
+[data-theme="dark"]{
+  --bg:#08111f;--panel:rgba(12,23,40,.94);--text:#eef5ff;--muted:#9fb0c7;
+  --line:#2b3a50;--border:rgba(255,255,255,.12);--shadow:0 20px 60px rgba(0,0,0,.38);
+  --card:#101d30;--card-2:#14243a;--accent:#3dd4c5;--accent-2:#ff8a65;--good:#34d399;--warn:#fbbf24;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font-fa);background:
+    radial-gradient(circle at 16% 18%,rgba(15,139,141,.12),transparent 27%),
+    radial-gradient(circle at 85% 80%,rgba(228,87,46,.10),transparent 30%),
+    linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px),
+    var(--bg);
+  background-size:auto,auto,34px 34px,34px 34px,auto;background-position:0 0,0 0,-1px -1px,-1px -1px,0 0;
+  color:var(--text);font-size:14px;letter-spacing:0;text-rendering:optimizeLegibility;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{min-height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.toolbar{
+  position:sticky;top:0;z-index:10;display:grid;grid-template-columns:minmax(220px,1fr) minmax(260px,440px) auto;
+  gap:10px;align-items:center;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);box-shadow:0 4px 18px rgba(15,23,42,.06)
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-mark{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;font-weight:900;font-size:20px;box-shadow:0 8px 18px rgba(15,139,141,.22)}
+.brand h1{font-size:15px;margin:0 0 3px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand small{display:block;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search{position:relative;min-width:0}
+.search input{width:100%;height:42px;border:1px solid var(--border);background:var(--card);border-radius:12px;padding:0 42px 0 12px;outline:none}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.search span{position:absolute;right:14px;top:10px;color:var(--muted);font-size:17px}
+.actions{display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:none}.actions::-webkit-scrollbar{display:none}
+.icon-btn,.text-btn,.select{
+  height:40px;border:1px solid var(--border);background:var(--card);border-radius:11px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:800;transition:.16s;text-decoration:none;white-space:nowrap
+}
+.icon-btn{width:40px;min-width:40px;font-size:17px}.text-btn{padding:0 12px;font-size:12px}.select{padding:0 10px;max-width:230px}
+.icon-btn:hover,.text-btn:hover,.select:hover{background:var(--card-2);border-color:color-mix(in srgb,var(--accent) 42%,var(--border))}
+.workspace{min-height:0;display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:14px;padding:14px}
+.side,.stage{min-width:0;background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);backdrop-filter:blur(18px);overflow:hidden}
+.side{display:flex;flex-direction:column;max-height:calc(100dvh - 88px)}
+.side-head{padding:14px;border-bottom:1px solid var(--border)}.side-head h2{font-size:13px;margin:0 0 3px;font-weight:900}.side-head p{margin:0;color:var(--muted);font-size:11px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border)}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:9px}.stat b{display:block;font-size:18px;color:var(--accent)}.stat span{font-size:10px;color:var(--muted);font-weight:800}
+.list{overflow:auto;padding:9px;display:flex;flex-direction:column;gap:7px}
+.card-link{border:1px solid var(--border);background:var(--card);border-radius:12px;padding:9px 10px;text-align:right;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start}
+.card-link:hover{background:var(--card-2)}.card-link.active{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}
+.num{direction:ltr;min-width:32px;height:24px;border-radius:8px;background:color-mix(in srgb,var(--accent) 13%,var(--card));color:var(--accent);display:grid;place-items:center;font-weight:900;font-size:11px}
+.link-title{min-width:0;font-size:11.5px;font-weight:800;line-height:1.8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.link-section{font-size:9.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage{min-height:calc(100dvh - 88px);display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.stage-top{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:center}
+.stage-title{min-width:0}.stage-title h2{margin:0;font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stage-title p{margin:3px 0 0;color:var(--muted);font-size:11px}
+.progress{width:min(320px,35vw);height:10px;background:var(--card-2);border:1px solid var(--border);border-radius:999px;overflow:hidden}.progress div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .22s}
+.card-wrap{min-height:0;display:grid;place-items:center;padding:24px;perspective:1400px}
+.flashcard{width:min(820px,100%);min-height:min(520px,64dvh);position:relative;transform-style:preserve-3d;transition:transform .36s cubic-bezier(.2,.7,.2,1)}
+.flashcard.flipped{transform:rotateY(180deg)}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(180deg,var(--card),var(--card-2));border:1px solid var(--border);
+  border-radius:18px;box-shadow:0 20px 60px rgba(15,23,42,.14);padding:26px;display:flex;flex-direction:column;overflow:hidden
+}
+.back{transform:rotateY(180deg);border-color:color-mix(in srgb,var(--accent) 44%,var(--border))}
+.kicker{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:12px;font-weight:900;border-bottom:1px solid var(--border);padding-bottom:12px}
+.kicker span:first-child{color:var(--accent)}
+.content{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;padding:20px 2px}
+.question{font-size:clamp(21px,3.1vw,34px);line-height:1.9;font-weight:900;text-align:center;margin:0;overflow-wrap:anywhere}
+.answer{font-size:clamp(16px,2vw,23px);line-height:2.15;font-weight:600;margin:0;overflow-wrap:anywhere}.answer strong{font-weight:900;color:var(--accent)}
+.face-foot{border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px;font-weight:800}
+.stage-actions{padding:13px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.nav{display:flex;gap:8px}.primary{background:var(--accent);border-color:var(--accent);color:white}.secondary{background:var(--accent-2);border-color:var(--accent-2);color:white}
+.mark{display:flex;gap:8px}.mark .known.active{background:var(--good);border-color:var(--good);color:white}.mark .review.active{background:var(--warn);border-color:var(--warn);color:#1f2937}
+.empty{padding:24px;color:var(--muted);line-height:2;text-align:center}
+@media(max-width:900px){
+  html,body{width:100%;overflow-x:hidden}
+  .app{display:block;min-height:100dvh}
+  .toolbar{
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"brand actions" "search search";
+    gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px
+  }
+  .brand{grid-area:brand;min-width:0}.brand-mark{width:38px;height:38px;border-radius:11px;font-size:16px;flex:0 0 auto}.brand h1{font-size:13px}.brand small{display:none}
+  .search{grid-area:search}.search input{height:42px;font-size:16px;border-radius:11px}
+  .actions{grid-area:actions;max-width:46vw;justify-content:flex-start;gap:6px}
+  .icon-btn,.text-btn{height:40px}.text-btn span{display:none}.actions .text-btn{width:40px;min-width:40px;padding:0}.select{max-width:150px;height:40px;font-size:12px}
+  .workspace{display:flex;flex-direction:column;padding:8px;gap:8px;min-height:0}
+  .side,.stage{border-radius:15px;box-shadow:0 10px 30px rgba(30,41,59,.12)}
+  .side{max-height:178px;flex:0 0 auto}.side-head{display:none}.stats{display:none}
+  .list{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px;gap:7px;scrollbar-width:none;overscroll-behavior-x:contain}.list::-webkit-scrollbar{display:none}
+  .card-link{flex:0 0 218px;min-height:70px;padding:8px}.num{min-width:30px;height:24px}.link-title{font-size:11px;line-height:1.65}.link-section{font-size:9px}
+  .stage{min-height:calc(100dvh - 260px);display:grid;grid-template-rows:auto minmax(360px,1fr) auto}
+  .stage-top{padding:10px 11px;align-items:flex-start}.stage-title h2{font-size:12.5px;line-height:1.6;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.stage-title p{font-size:10.5px}.progress{width:122px;height:9px;margin-top:5px;flex:0 0 auto}
+  .card-wrap{padding:10px;align-items:stretch}.flashcard{width:100%;min-height:0;height:100%}.face{border-radius:15px;padding:16px}.kicker{font-size:11px;padding-bottom:10px}.content{padding:14px 0}.question{font-size:clamp(18px,5.2vw,23px);line-height:1.85}.answer{font-size:clamp(14.5px,4.1vw,17px);line-height:2}.face-foot{font-size:10px;line-height:1.7}
+  .stage-actions{padding:9px;align-items:stretch}.nav{flex:1 1 100%;display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:7px}.mark{flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr;gap:7px}.stage-actions .text-btn{width:auto;min-width:0;height:42px;padding:0 8px;font-size:12px}
+}
+@media(max-width:520px){
+  .toolbar{grid-template-columns:minmax(0,1fr);grid-template-areas:"brand" "search" "actions";gap:7px}
+  .actions{max-width:none;width:100%;display:grid;grid-template-columns:minmax(0,1fr) 42px 42px 42px}.actions .text-btn,.icon-btn{width:42px;min-width:42px}.select{display:block;max-width:none;width:100%;min-width:0}
+  .workspace{padding:7px}.side{max-height:122px}.card-link{flex-basis:190px;min-height:64px}.link-title{-webkit-line-clamp:2}.link-section{display:none}
+  .stage{min-height:calc(100dvh - 246px);grid-template-rows:auto minmax(330px,1fr) auto}.stage-top{padding:9px 10px}.progress{width:94px}.face{padding:14px}.face-foot{display:none}.question{font-size:clamp(17px,5.4vw,21px)}.answer{font-size:clamp(14px,4.25vw,16px)}
+}
+@media(max-width:380px){
+  .brand h1{font-size:12px}.brand-mark{width:35px;height:35px}.search input{height:40px}.actions{grid-template-columns:minmax(0,1fr) 40px 40px 40px}.actions .text-btn,.icon-btn{width:40px;min-width:40px;height:40px}
+  .side{max-height:112px}.card-link{flex-basis:176px}.stage{min-height:calc(100dvh - 232px);grid-template-rows:auto minmax(315px,1fr) auto}.stage-actions .text-btn{height:40px;font-size:11px}.content{padding:10px 0}
+}
+@media(max-height:680px) and (max-width:520px){
+  .side{display:none}.stage{min-height:calc(100dvh - 160px);grid-template-rows:auto minmax(280px,1fr) auto}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="toolbar">
+    <div class="brand">
+      <div class="brand-mark">QA</div>
+      <div><h1>فلش‌کارت‌های استراتژی و نوآوری</h1><small>۲۰۰ پرسش و پاسخ کوتاه بخش‌های اول تا پنجم</small></div>
+    </div>
+    <div class="search">
+      <span>⌕</span>
+      <input id="search" type="search" placeholder="جست‌وجو در سؤال یا پاسخ…" autocomplete="off">
+    </div>
+    <div class="actions">
+      <select class="select" id="sectionFilter" title="بخش"></select>
+      <button class="icon-btn" id="shuffle" title="ترتیب تصادفی">⤨</button>
+      <button class="icon-btn" id="theme" title="تغییر پوسته">◐</button>
+      <a class="text-btn" href="/" title="صفحه اصلی">⌂ <span>خانه</span></a>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="side">
+      <div class="side-head">
+        <h2>کارت‌ها</h2>
+        <p id="sourceState">در حال بارگذاری منبع</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="totalCount">۰</b><span>کارت</span></div>
+        <div class="stat"><b id="knownCount">۰</b><span>یادگرفته‌شده</span></div>
+      </div>
+      <div class="list" id="cardList"></div>
+    </aside>
+
+    <section class="stage">
+      <div class="stage-top">
+        <div class="stage-title">
+          <h2 id="currentSection">فلش‌کارت</h2>
+          <p id="currentMeta">۰ از ۰</p>
+        </div>
+        <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
+      </div>
+      <div class="card-wrap">
+        <div class="flashcard" id="flashcard">
+          <article class="face front">
+            <div class="kicker"><span id="frontNumber"></span><span>سؤال</span></div>
+            <div class="content"><p class="question" id="questionText"></p></div>
+            <div class="face-foot"><span id="frontSection"></span><span>Space / Enter</span></div>
+          </article>
+          <article class="face back">
+            <div class="kicker"><span id="backNumber"></span><span>پاسخ</span></div>
+            <div class="content"><p class="answer" id="answerText"></p></div>
+            <div class="face-foot"><span id="backSection"></span><span>← / →</span></div>
+          </article>
+        </div>
+      </div>
+      <div class="stage-actions">
+        <div class="nav">
+          <button class="text-btn" id="prev">قبلی</button>
+          <button class="text-btn primary" id="flip">نمایش پاسخ</button>
+          <button class="text-btn" id="next">بعدی</button>
+        </div>
+        <div class="mark">
+          <button class="text-btn known" id="known">بلدم</button>
+          <button class="text-btn review" id="review">مرور</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const FA_DIGITS='۰۱۲۳۴۵۶۷۸۹';
+const toFa=n=>String(n).replace(/\d/g,d=>FA_DIGITS[d]);
+const els={
+  search:document.getElementById('search'),sectionFilter:document.getElementById('sectionFilter'),shuffle:document.getElementById('shuffle'),theme:document.getElementById('theme'),
+  sourceState:document.getElementById('sourceState'),totalCount:document.getElementById('totalCount'),knownCount:document.getElementById('knownCount'),cardList:document.getElementById('cardList'),
+  currentSection:document.getElementById('currentSection'),currentMeta:document.getElementById('currentMeta'),progressBar:document.getElementById('progressBar'),flashcard:document.getElementById('flashcard'),
+  frontNumber:document.getElementById('frontNumber'),backNumber:document.getElementById('backNumber'),questionText:document.getElementById('questionText'),answerText:document.getElementById('answerText'),
+  frontSection:document.getElementById('frontSection'),backSection:document.getElementById('backSection'),prev:document.getElementById('prev'),next:document.getElementById('next'),flip:document.getElementById('flip'),known:document.getElementById('known'),review:document.getElementById('review')
+};
+let cards=[],filtered=[],index=0,flipped=false,known=new Set(JSON.parse(localStorage.getItem('strategy-qa-known')||'[]')),review=new Set(JSON.parse(localStorage.getItem('strategy-qa-review')||'[]'));
+
+function stripMd(text){return text.replace(/^#+\s*/,'').replace(/\*\*/g,'').trim()}
+function inlineMd(text){
+  const safe=text.replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  return safe.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+}
+function collectNumbered(text, mode){
+  const rows=[];let section='عمومی',current=null;
+  for(const raw of text.split(/\r?\n/)){
+    const line=raw.trim();
+    if(!line || line==='---') continue;
+    if(/^##\s+بخش/.test(line) || /^#\s+بخش/.test(line) || /^#\s+سؤالات ترکیبی/.test(line)) {
+      section=stripMd(line);continue;
+    }
+    if(/^#|^>|^- /.test(line)) continue;
+    const match=line.match(/^(\d+)\.\s+(.*)$/);
+    if(match){
+      current={number:Number(match[1]),section,text:match[2].trim()};
+      rows.push(current);
+    }else if(current && mode==='answers'){
+      current.text += ' ' + line;
+    }
+  }
+  return rows;
+}
+function parseQa(markdown){
+  const listStart=markdown.indexOf('## فهرست');
+  const questionsText=listStart>=0 ? markdown.slice(0,listStart) : markdown;
+  const answersStart=markdown.indexOf('# بخش اول:', listStart);
+  const answersText=answersStart>=0 ? markdown.slice(answersStart) : '';
+  const questions=collectNumbered(questionsText,'questions');
+  const answers=new Map(collectNumbered(answersText,'answers').map(item=>[item.number,item]));
+  return questions.map(q=>({number:q.number,section:q.section,question:q.text,answer:answers.get(q.number)?.text || 'پاسخی برای این کارت پیدا نشد.'}));
+}
+function saveMarks(){
+  localStorage.setItem('strategy-qa-known',JSON.stringify([...known]));
+  localStorage.setItem('strategy-qa-review',JSON.stringify([...review]));
+}
+function applyFilters(){
+  const term=els.search.value.trim().toLowerCase();
+  const section=els.sectionFilter.value;
+  filtered=cards.filter(card=>{
+    const inSection=!section || card.section===section;
+    const inSearch=!term || (card.question+' '+card.answer+' '+card.section).toLowerCase().includes(term);
+    return inSection && inSearch;
+  });
+  index=Math.min(index,Math.max(filtered.length-1,0));
+  flipped=false;
+  render();
+}
+function renderList(){
+  els.cardList.innerHTML='';
+  if(!filtered.length){els.cardList.innerHTML='<div class="empty">نتیجه‌ای پیدا نشد.</div>';return}
+  const fragment=document.createDocumentFragment();
+  filtered.forEach((card,i)=>{
+    const button=document.createElement('button');
+    button.className='card-link'+(i===index?' active':'');
+    button.type='button';
+    button.innerHTML=`<span class="num">${toFa(card.number)}</span><span><span class="link-title">${inlineMd(card.question)}</span><span class="link-section">${card.section}</span></span>`;
+    button.addEventListener('click',()=>{index=i;flipped=false;render()});
+    fragment.appendChild(button);
+  });
+  els.cardList.appendChild(fragment);
+}
+function render(){
+  els.totalCount.textContent=toFa(filtered.length);
+  els.knownCount.textContent=toFa([...known].filter(n=>cards.some(c=>c.number===n)).length);
+  els.flashcard.classList.toggle('flipped',flipped);
+  els.flip.textContent=flipped?'نمایش سؤال':'نمایش پاسخ';
+  renderList();
+  if(!filtered.length){
+    els.currentSection.textContent='بدون کارت';els.currentMeta.textContent='۰ از ۰';els.progressBar.style.width='0%';
+    els.frontNumber.textContent='';els.backNumber.textContent='';els.questionText.textContent='';els.answerText.textContent='';return;
+  }
+  const card=filtered[index];
+  els.currentSection.textContent=card.section;
+  els.currentMeta.textContent=`${toFa(index+1)} از ${toFa(filtered.length)}`;
+  els.progressBar.style.width=`${((index+1)/filtered.length)*100}%`;
+  els.frontNumber.textContent=`کارت ${toFa(card.number)}`;els.backNumber.textContent=`کارت ${toFa(card.number)}`;
+  els.questionText.innerHTML=inlineMd(card.question);els.answerText.innerHTML=inlineMd(card.answer);
+  els.frontSection.textContent=card.section;els.backSection.textContent=card.section;
+  els.known.classList.toggle('active',known.has(card.number));els.review.classList.toggle('active',review.has(card.number));
+}
+function move(delta){
+  if(!filtered.length) return;
+  index=(index+delta+filtered.length)%filtered.length;
+  flipped=false;
+  render();
+}
+function populateSections(){
+  const sections=[...new Set(cards.map(card=>card.section))];
+  els.sectionFilter.innerHTML='<option value="">همه بخش‌ها</option>'+sections.map(section=>`<option value="${section}">${section}</option>`).join('');
+}
+async function init(){
+  const savedTheme=localStorage.getItem('strategy-qa-theme');
+  if(savedTheme) document.documentElement.dataset.theme=savedTheme;
+  try{
+    const response=await fetch('sources/strategy/qa.md',{cache:'no-cache'});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    cards=parseQa(await response.text());
+    populateSections();
+    els.sourceState.textContent=`منبع: sources/strategy/qa.md`;
+    applyFilters();
+  }catch(error){
+    els.sourceState.textContent='خطا در بارگذاری منبع';
+    els.cardList.innerHTML=`<div class="empty">${error.message}</div>`;
+  }
+}
+els.search.addEventListener('input',applyFilters);
+els.sectionFilter.addEventListener('change',applyFilters);
+els.shuffle.addEventListener('click',()=>{filtered=[...filtered].sort(()=>Math.random()-.5);index=0;flipped=false;render()});
+els.theme.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'':'dark';document.documentElement.dataset.theme=next;localStorage.setItem('strategy-qa-theme',next)});
+els.flip.addEventListener('click',()=>{flipped=!flipped;render()});
+els.flashcard.addEventListener('click',()=>{flipped=!flipped;render()});
+els.prev.addEventListener('click',()=>move(-1));els.next.addEventListener('click',()=>move(1));
+els.known.addEventListener('click',()=>{const card=filtered[index];if(!card)return;known.has(card.number)?known.delete(card.number):known.add(card.number);review.delete(card.number);saveMarks();render()});
+els.review.addEventListener('click',()=>{const card=filtered[index];if(!card)return;review.has(card.number)?review.delete(card.number):review.add(card.number);known.delete(card.number);saveMarks();render()});
+window.addEventListener('keydown',event=>{
+  if(event.target.matches('input,select')) return;
+  if(event.key==='ArrowLeft') move(1);
+  if(event.key==='ArrowRight') move(-1);
+  if(event.key===' ' || event.key==='Enter'){event.preventDefault();flipped=!flipped;render()}
+});
+init();
+</script>
+</body>
+</html>
